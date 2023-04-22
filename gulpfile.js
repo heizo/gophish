@@ -36,7 +36,6 @@ vendorjs = function () {
             vendor_directory + 'sweetalert2.min.js',
             vendor_directory + 'bootstrap-datetime.js',
             vendor_directory + 'select2.min.js',
-            vendor_directory + 'core.min.js',
             vendor_directory + 'highcharts.js',
             vendor_directory + 'ua-parser.min.js'
         ])
@@ -89,9 +88,7 @@ styles = function () {
             css_directory + 'select2.min.css',
             css_directory + 'select2-bootstrap.min.css',
         ])
-        .pipe(cleanCSS({
-            compatibilty: 'ie9'
-        }))
+        .pipe(cleanCSS())
         .pipe(concat('gophish.css'))
         .pipe(gulp.dest(dest_css_directory));
 }

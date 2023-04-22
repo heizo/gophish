@@ -47,23 +47,23 @@ function save(idx) {
     if (idx != -1) {
         template.id = templates[idx].id
         api.templateId.put(template)
-            .success(function (data) {
+            .done(function (data) {
                 successFlash("Template edited successfully!")
                 load()
                 dismiss()
             })
-            .error(function (data) {
+            .fail(function (data) {
                 modalError(data.responseJSON.message)
             })
     } else {
         // Submit the template
         api.templates.post(template)
-            .success(function (data) {
+            .done(function (data) {
                 successFlash("Template added successfully!")
                 load()
                 dismiss()
             })
-            .error(function (data) {
+            .fail(function (data) {
                 modalError(data.responseJSON.message)
             })
     }
@@ -93,10 +93,10 @@ var deleteTemplate = function (idx) {
         preConfirm: function () {
             return new Promise(function (resolve, reject) {
                 api.templateId.delete(templates[idx].id)
-                    .success(function (msg) {
+                    .done(function (msg) {
                         resolve()
                     })
-                    .error(function (data) {
+                    .fail(function (data) {
                         reject(data.responseJSON.message)
                     })
             })
@@ -118,7 +118,7 @@ var deleteTemplate = function (idx) {
 function deleteTemplate(idx) {
     if (confirm("Delete " + templates[idx].name + "?")) {
         api.templateId.delete(templates[idx].id)
-            .success(function (data) {
+            .done(function (data) {
                 successFlash(data.message)
                 load()
             })
@@ -161,10 +161,10 @@ function attach(files) {
 }
 
 function edit(idx) {
-    $("#modalSubmit").unbind('click').click(function () {
+    $("#modalSubmit").off('click').on('click', function () {
         save(idx)
     })
-    $("#attachmentUpload").unbind('click').click(function () {
+    $("#attachmentUpload").off('click').on('click', function () {
         this.value = null
     })
     $("#html_editor").ckeditor()
@@ -217,7 +217,7 @@ function edit(idx) {
         $("#templateModalLabel").text("New Template")
     }
     // Handle Deletion
-    $("#attachmentsTable").unbind('click').on("click", "span>i.fa-trash-o", function () {
+    $("#attachmentsTable").off('click').on("click", "span>i.fa-trash-o", function () {
         attachmentsTable.row($(this).parents('tr'))
             .remove()
             .draw();
@@ -225,10 +225,10 @@ function edit(idx) {
 }
 
 function copy(idx) {
-    $("#modalSubmit").unbind('click').click(function () {
+    $("#modalSubmit").off('click').on('click', function () {
         save(-1)
     })
-    $("#attachmentUpload").unbind('click').click(function () {
+    $("#attachmentUpload").off('click').on('click', function () {
         this.value = null
     })
     $("#html_editor").ckeditor()
@@ -267,7 +267,7 @@ function copy(idx) {
         ]).draw()
     })
     // Handle Deletion
-    $("#attachmentsTable").unbind('click').on("click", "span>i.fa-trash-o", function () {
+    $("#attachmentsTable").off('click').on("click", "span>i.fa-trash-o", function () {
         attachmentsTable.row($(this).parents('tr'))
             .remove()
             .draw();
@@ -289,18 +289,18 @@ function importEmail() {
                 content: raw,
                 convert_links: convert_links
             })
-            .success(function (data) {
+            .done(function (data) {
                 $("#text_editor").val(data.text)
                 $("#html_editor").val(data.html)
                 $("#subject").val(data.subject)
                 // If the HTML is provided, let's open that view in the editor
                 if (data.html) {
                     CKEDITOR.instances["html_editor"].setMode('wysiwyg')
-                    $('.nav-tabs a[href="#html"]').click()
+                    $('.nav-tabs a[href="#html"]').trigger('click')
                 }
                 $("#importEmailModal").modal("hide")
             })
-            .error(function (data) {
+            .fail(function (data) {
                 modalError(data.responseJSON.message)
             })
     }
@@ -311,7 +311,7 @@ function load() {
     $("#emptyMessage").hide()
     $("#loading").show()
     api.templates.get()
-        .success(function (ts) {
+        .done(function (ts) {
             templates = ts
             $("#loading").hide()
             if (templates.length > 0) {
@@ -346,13 +346,13 @@ function load() {
                 $("#emptyMessage").show()
             }
         })
-        .error(function () {
+        .fail(function () {
             $("#loading").hide()
             errorFlash("Error fetching templates")
         })
 }
 
-$(document).ready(function () {
+$(function () {
     // Setup multiple modals
     // Code based on http://miles-by-motorcycle.com/static/bootstrap-modal/index.html
     $('.modal').on('hidden.bs.modal', function (event) {

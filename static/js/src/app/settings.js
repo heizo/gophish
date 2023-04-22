@@ -1,18 +1,18 @@
-$(document).ready(function () {
+$(function () {
     $('[data-toggle="tooltip"]').tooltip();
-    $("#apiResetForm").submit(function (e) {
+    $("#apiResetForm").on('submit', function (e) {
         api.reset()
-            .success(function (response) {
+            .done(function (response) {
                 user.api_key = response.data
                 successFlash(response.message)
                 $("#api_key").val(user.api_key)
             })
-            .error(function (data) {
+            .fail(function (data) {
                 errorFlash(data.message)
             })
         return false
     })
-    $("#settingsForm").submit(function (e) {
+    $("#settingsForm").on('submit', function (e) {
         $.post("/settings", $(this).serialize())
             .done(function (data) {
                 successFlash(data.message)
@@ -23,7 +23,7 @@ $(document).ready(function () {
         return false
     })
     //$("#imapForm").submit(function (e) {
-    $("#savesettings").click(function() {
+    $("#savesettings").on('click', function() {
         var imapSettings = {}
         imapSettings.host = $("#imaphost").val()
         imapSettings.port = $("#imapport").val()
@@ -69,7 +69,7 @@ $(document).ready(function () {
                     errorFlash("Unable to update IMAP settings.")
                 }
             })
-            .success(function (data){
+            .done(function (data){
                 loadIMAPSettings()
             })
             .fail(function (data) {
@@ -83,7 +83,7 @@ $(document).ready(function () {
         return false
     })
 
-    $("#validateimap").click(function() {
+    $("#validateimap").on('click', function() {
 
         // Query validate imap server endpoint
         var server = {}
@@ -187,17 +187,17 @@ $(document).ready(function () {
 
       }); //end testclick
 
-    $("#reporttab").click(function() {
+    $("#reporttab").on('click', function() {
         loadIMAPSettings()
     })
 
-    $("#advanced").click(function() {
+    $("#advanced").on('click', function() {
         $("#advancedarea").toggle();
     })
 
     function loadIMAPSettings(){
         api.IMAP.get()
-        .success(function (imap) {
+        .done(function (imap) {
             if (imap.length == 0){
                 $('#lastlogindiv').hide()
             } else {
@@ -223,7 +223,7 @@ $(document).ready(function () {
             }  
 
         })
-        .error(function () {
+        .fail(function () {
             errorFlash("Error fetching IMAP settings")
         })
     }

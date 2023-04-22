@@ -296,7 +296,7 @@ var api = {
 window.api = api
 
 // Register our moment.js datatables listeners
-$(document).ready(function () {
+$(function () {
     // Setup nav highlighting
     var path = location.pathname;
     $('.nav-sidebar li').each(function () {

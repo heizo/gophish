@@ -18,7 +18,7 @@ function save(idx) {
     if (idx != -1) {
         page.id = pages[idx].id
         api.pageId.put(page)
-            .success(function (data) {
+            .done(function (data) {
                 successFlash("Page edited successfully!")
                 load()
                 dismiss()
@@ -26,12 +26,12 @@ function save(idx) {
     } else {
         // Submit the page
         api.pages.post(page)
-            .success(function (data) {
+            .done(function (data) {
                 successFlash("Page added successfully!")
                 load()
                 dismiss()
             })
-            .error(function (data) {
+            .fail(function (data) {
                 modalError(data.responseJSON.message)
             })
     }
@@ -63,10 +63,10 @@ var deletePage = function (idx) {
         preConfirm: function () {
             return new Promise(function (resolve, reject) {
                 api.pageId.delete(pages[idx].id)
-                    .success(function (msg) {
+                    .done(function (msg) {
                         resolve()
                     })
-                    .error(function (data) {
+                    .fail(function (data) {
                         reject(data.responseJSON.message)
                     })
             })
@@ -94,19 +94,19 @@ function importSite() {
                 url: url,
                 include_resources: false
             })
-            .success(function (data) {
+            .done(function (data) {
                 $("#html_editor").val(data.html)
                 CKEDITOR.instances["html_editor"].setMode('wysiwyg')
                 $("#importSiteModal").modal("hide")
             })
-            .error(function (data) {
+            .fail(function (data) {
                 modalError(data.responseJSON.message)
             })
     }
 }
 
 function edit(idx) {
-    $("#modalSubmit").unbind('click').click(function () {
+    $("#modalSubmit").off('click').on('click', function () {
         save(idx)
     })
     $("#html_editor").ckeditor()
@@ -130,7 +130,7 @@ function edit(idx) {
 }
 
 function copy(idx) {
-    $("#modalSubmit").unbind('click').click(function () {
+    $("#modalSubmit").off('click').on('click', function () {
         save(-1)
     })
     $("#html_editor").ckeditor()
@@ -147,7 +147,7 @@ function load() {
     $("#emptyMessage").hide()
     $("#loading").show()
     api.pages.get()
-        .success(function (ps) {
+        .done(function (ps) {
             pages = ps
             $("#loading").hide()
             if (pages.length > 0) {
@@ -182,13 +182,13 @@ function load() {
                 $("#emptyMessage").show()
             }
         })
-        .error(function () {
+        .fail(function () {
             $("#loading").hide()
             errorFlash("Error fetching pages")
         })
 }
 
-$(document).ready(function () {
+$(function () {
     // Setup multiple modals
     // Code based on http://miles-by-motorcycle.com/static/bootstrap-modal/index.html
     $('.modal').on('hidden.bs.modal', function (event) {
@@ -234,9 +234,14 @@ $(document).ready(function () {
     $('#modal').on('hidden.bs.modal', function (event) {
         dismiss()
     });
-    $("#capture_credentials_checkbox").change(function () {
-        $("#capture_passwords").toggle()
-        $("#redirect_url").toggle()
+    $("#capture_credentials_checkbox").on('change', function () {
+        if ($("#capture_credentials_checkbox").prop("checked")) {
+            $("#capture_passwords").show()
+            $("#redirect_url").show()
+        } else {
+            $("#capture_passwords").hide()
+            $("#redirect_url").hide()
+        }
     })
     CKEDITOR.on('dialogDefinition', function (ev) {
         // Take the dialog name and its definition from the event data.
